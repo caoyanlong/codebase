@@ -3,6 +3,7 @@ package com.codebase.lib;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Stack;
 
@@ -289,6 +290,42 @@ public class Algorithm {
             System.out.println(interval.toString());
         }
         return res;
+    }
+
+    /**
+     * @param string
+     * @return 求字符串中不重复字符串的长度
+     */
+    public int bestLengthOfString(String string) {
+        if (string == null) {
+            return 0;
+        }
+        if (string.length() <= 1) {
+            return string.length();
+        }
+        HashSet<Character> characters = new HashSet<>();
+
+        int i = 0;
+        int pre = 0;
+        int max_index = 0;
+        int length = string.length();
+        while (i < length) {
+            if (characters.contains(string.charAt(i))) {
+                if (i - pre > max_index) {
+                    max_index = i - pre;
+                }
+                while (string.charAt(pre) != string.charAt(i)) {
+                    pre++;
+                    characters.remove(pre);
+                }
+                pre++;
+            } else {
+                characters.add(string.charAt(i));
+            }
+            i++;
+        }
+        max_index = Math.max(i - pre, max_index);
+        return max_index;
     }
 
     /**
