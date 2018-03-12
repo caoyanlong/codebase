@@ -1,8 +1,10 @@
 package com.codebase.lib;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Stack;
@@ -603,9 +605,40 @@ public class Algorithm {
      * [3,2,1]
      * ]
      */
+    // 最终返回的结果集
+    List<List<Integer>> res = new ArrayList<List<Integer>>();
+
     public List<List<Integer>> permute(int[] nums) {
-        List<List<Integer>> result = new ArrayList<>();
-        List<Integer> integerList = new ArrayList<>();
+        int len = nums.length;
+        if (len == 0 || nums == null) return res;
+
+        // 采用前后元素交换的办法，dfs解题
+        exchange(nums, 0, len);
+        return res;
+    }
+
+    public void exchange(int[] nums, int i, int len) {
+        // 将当前数组加到结果集中
+        if (i == len - 1) {
+            List<Integer> list = new ArrayList<>();
+            for (int j = 0; j < len; j++) {
+                list.add(nums[j]);
+            }
+            res.add(list);
+            return;
+        }
+        // 将当前位置的数跟后面的数交换，并搜索解
+        for (int j = i; j < len; j++) {
+            swap(nums, i, j);
+            exchange(nums, i + 1, len);
+            swap(nums, i, j);
+        }
+    }
+
+    public void swap(int[] nums, int i, int j) {
+        int temp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = temp;
     }
 
     /**
@@ -621,6 +654,36 @@ public class Algorithm {
      * ]
      */
     public List<List<String>> groupAnagrams(String[] strs) {
+        if (strs == null || strs.length <= 0) {
+            return null;
+        }
+        HashMap<String, List<String>> map = new HashMap<>();
+        for (String str : strs) {
+            char[] chars = str.toCharArray();
+            Arrays.sort(chars);
+            String sortString = String.valueOf(chars);
+            map.putIfAbsent(sortString, new ArrayList<String>());
+            map.get(sortString).add(str);
+        }
+        return new ArrayList<>(map.values());
+    }
 
+    /**
+     * 二进制求和
+     *
+     * @param a
+     * @param b
+     * @return 给定两个二进制字符串，返回他们的和（用二进制表示）。
+     * <p>
+     * 案例：
+     * a = "11"
+     * b = "1"
+     * 返回 "100"
+     */
+    public String addBinary(String a, String b) {
+        if (a == null || a.length() <=0) {
+            
+        }
+        return null;
     }
 }
