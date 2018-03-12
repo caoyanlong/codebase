@@ -588,4 +588,39 @@ public class Algorithm {
         return pos;
     }
 
+    /**
+     * 全排列
+     *
+     * @param nums
+     * @return [1, 2, 3] 具有如下排列：
+     * <p>
+     * [
+     * [1,2,3],
+     * [1,3,2],
+     * [2,1,3],
+     * [2,3,1],
+     * [3,1,2],
+     * [3,2,1]
+     * ]
+     */
+    public List<List<Integer>> permute(int[] nums) {
+        List<List<Integer>> result = new ArrayList<>();
+        List<Integer> integerList = new ArrayList<>();
+    }
+
+    /**
+     * 字谜分组
+     *
+     * @param strs
+     * @return 例如，给定 ["eat", "tea", "tan", "ate", "nat", "bat"]，返回：
+     * <p>
+     * [
+     * ["ate", "eat","tea"],
+     * ["nat","tan"],
+     * ["bat"]
+     * ]
+     */
+    public List<List<String>> groupAnagrams(String[] strs) {
+
+    }
 }
