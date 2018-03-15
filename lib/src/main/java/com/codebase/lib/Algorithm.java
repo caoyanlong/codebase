@@ -114,13 +114,15 @@ public class Algorithm {
     }
 
     /**
-     * 频率 ：5
+     * 频率 ：5 自己写的
      *
      * @param l1
      * @param l2
      * @return 合并两个已排序链表
      */
     public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+        if (l1 == null) return l2;
+        if (l2 == null) return l1;
         ListNode newNode = new ListNode(0);
         ListNode nextL1 = l1;
         ListNode nextL2 = l2;
@@ -134,7 +136,12 @@ public class Algorithm {
             newNode.next = nextL1.next;
             nextL1 = nextL1.next;
         }
+        if (nextL1 != null)
+            newNode.next = nextL1;
+        else
+            newNode.next = nextL2;
         return newNode;
+
     }
 
     /**
@@ -295,6 +302,455 @@ public class Algorithm {
     }
 
     /**
+     * 频率 ：10
+     *
+     * @param n
+     * @return 爬楼梯
+     * <p>
+     * 输入： 2
+     * 输出： 2
+     * 说明： 有两种方法可以爬到顶端。
+     * 1.  1 步 + 1 步
+     * 2.  2 步
+     */
+
+    public int climbStairs(int n) {
+        if (n == 0 || n == 1 || n == 2) {
+            return n;
+        }
+        return climbStairs(n - 1) + climbStairs(n - 2);
+    }
+
+    /**
+     * 频率 ：11
+     *
+     * @param matrix
+     * @return 矩阵置零
+     * <p>
+     * 给定一个 m x n 的矩阵，如果一个元素为 0 ，则将这个元素所在的行和列都置零。
+     */
+    public void setZeroes(int[][] matrix) {
+        int rownum = matrix.length;
+        if (rownum == 0) return;
+        int colnum = matrix[0].length;
+        if (colnum == 0) return;
+
+        boolean hasZeroFirstRow = false, hasZeroFirstColumn = false;
+
+        // Does first colnum have zero?
+        for (int j = 0; j < colnum; ++j) {
+            if (matrix[0][j] == 0) {
+                hasZeroFirstColumn = true;
+                break;
+            }
+        }
+
+        // Does first row have zero?
+        for (int i = 0; i < rownum; ++i) {
+            if (matrix[i][0] == 0) {
+                hasZeroFirstRow = true;
+                break;
+            }
+        }
+
+        // find zeroes and store the info in first row and column
+        for (int i = 1; i < matrix.length; ++i) {
+            for (int j = 1; j < matrix[0].length; ++j) {
+                if (matrix[i][j] == 0) {
+                    matrix[i][0] = 0;
+                    matrix[0][j] = 0;
+                }
+            }
+        }
+
+        // set zeroes except the first row and column
+        for (int i = 1; i < matrix.length; ++i) {
+            for (int j = 1; j < matrix[0].length; ++j) {
+                if (matrix[i][0] == 0 || matrix[0][j] == 0) matrix[i][j] = 0;
+            }
+        }
+
+        // set zeroes for first row and column if needed
+        if (hasZeroFirstRow) {
+            for (int j = 0; j < colnum; ++j) {
+                matrix[0][j] = 0;
+            }
+        }
+        if (hasZeroFirstColumn) {
+            for (int i = 0; i < rownum; ++i) {
+                matrix[i][0] = 0;
+            }
+        }
+    }
+
+    /**
+     * 频率 ：12
+     *
+     * @param nums1
+     * @param m
+     * @param nums2
+     * @param n     合并两个有序数组
+     *              <p>
+     *              给定两个有序整数数组 nums1 和 nums2，将 nums2 合并到 nums1中，使得 num1 成为一个有序数组。
+     */
+    public void merge(int[] nums1, int m, int[] nums2, int n) {
+        int i = m - 1, j = n - 1, index = n + m - 1;
+        while (i >= 0 && j >= 0) {
+            nums1[index--] = nums1[i] > nums2[j] ? nums1[i--] : nums2[j--];
+        }
+        while (i >= 0) nums1[index--] = nums1[i--];
+        while (j >= 0) nums1[index--] = nums2[j--];
+    }
+
+    /**
+     * 频率 ：13 自己写的不一定对
+     *
+     * @param l1
+     * @param l2
+     * @return 两数相加
+     */
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        ListNode newNode = new ListNode(0);
+        ListNode l1Current = l1;
+        ListNode l2Current = l2;
+        while (l1Current.next != null) {
+            newNode.value = (l1Current.value + l2Current.value) % 10;
+            newNode.next.value = (l1Current.next.value + l2Current.next.value) % 10;
+            if (newNode.value > 9) {
+                newNode.next.value += 1;
+            }
+            l1Current = l1Current.next;
+            l2Current = l2Current.next;
+        }
+        return newNode;
+    }
+
+    /**
+     * 频率 ：14
+     *
+     * @param lists
+     * @return Merge k Sorted Lists
+     * 初见之下，最容易想到的方法是“归并排序”（Merging Sort）：将两个或两个以上的有序表组合成一个新的有序表，
+     * 无论是顺序存储结构还是链式存储结构，对于任何两个长度分别为m和n的有序表，其组合都可在O(m+n)的时间复杂度量级上完成。
+     * 对于K个有序表，假设共有N个元素，且这些有序表初始状态都不为空，每个有序表平均拥有N/K个元素。
+     * 最常用的方法是采用“二分”的思想进行两两合并：第一轮循环，
+     * 有序表lists[0]与lists[(K+1)/2]，lists[1]与lists[(K+1)/2+1]，lists[2]与lists[(K+1)/2+2]....，lists[K/2-1]与lists[K-1]。
+     * 这样K个有序表就被组合成了K/2个有序表；第二轮循环后将减少为K/4个有序表；直到组合成一个具有N个元素的有序表
+     */
+    public ListNode mergeKLists(ListNode[] lists) {
+        if (lists == null || lists.length == 0)
+            return null;
+        int len = lists.length;
+
+        if (len == 1)
+            return lists[0];
+
+        while (len > 1)//基于“二分”思想进行链表的两两组合
+        {
+            int mid = (len + 1) / 2;//二分
+            for (int i = 0; i < len / 2; i++) {
+                lists[i] = mergeTwoLists1(lists[i], lists[i + mid]);
+            }
+            len = mid;
+        }
+        return lists[0];
+    }
+
+    //有序链表的组合，L1和L2为头结点，归并排序的核心思想
+    public ListNode mergeTwoLists1(ListNode L1, ListNode L2) {
+        if (L1 == null) return L2;
+        if (L2 == null) return L1;
+
+        ListNode head = new ListNode(0);//保存结果的链表，头结点初始化
+        ListNode phead = head;
+
+        while (L1 != null && L2 != null)//两个链表归并排序
+        {
+            if (L1.value <= L2.value) {
+                phead.next = L1;//接入结果链表
+                phead = phead.next;//移动指针
+                L1 = L1.next;
+            } else {
+                phead.next = L2;
+                phead = phead.next;
+                L2 = L2.next;
+            }
+        }
+        if (L1 != null)
+            phead.next = L1;
+        else
+            phead.next = L2;
+
+        return head.next;//初始化的第一个节点不属于结果
+    }
+
+
+    /**
+     * 频率 ：15
+     *
+     * @param nums
+     * @param val
+     * @return 给定 nums = [3,2,2,3]，val = 3，
+     * 你的函数应该返回 长度 = 2，数组的前两个元素是 2。
+     * 移除元素
+     */
+    public int removeElement(int[] nums, int val) {
+        if (nums.length < 0) {
+            return 0;
+        }
+        int pos = 0;
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] != val) {
+                nums[pos] = nums[i];
+                pos++;
+            }
+        }
+        return pos;
+    }
+
+    /**
+     * 频率 ：16
+     * 全排列
+     *
+     * @param nums
+     * @return [1, 2, 3] 具有如下排列：
+     * <p>
+     * [
+     * [1,2,3],
+     * [1,3,2],
+     * [2,1,3],
+     * [2,3,1],
+     * [3,1,2],
+     * [3,2,1]
+     * ]
+     */
+    // 最终返回的结果集
+    List<List<Integer>> res = new ArrayList<List<Integer>>();
+
+    public List<List<Integer>> permute(int[] nums) {
+        int len = nums.length;
+        if (len == 0 || nums == null) return res;
+
+        // 采用前后元素交换的办法，dfs解题
+        exchange(nums, 0, len);
+        return res;
+    }
+
+    public void exchange(int[] nums, int i, int len) {
+        // 将当前数组加到结果集中
+        if (i == len - 1) {
+            List<Integer> list = new ArrayList<>();
+            for (int j = 0; j < len; j++) {
+                list.add(nums[j]);
+            }
+            res.add(list);
+            return;
+        }
+        // 将当前位置的数跟后面的数交换，并搜索解
+        for (int j = i; j < len; j++) {
+            swap(nums, i, j);
+            exchange(nums, i + 1, len);
+            swap(nums, i, j);
+        }
+    }
+
+    public void swap(int[] nums, int i, int j) {
+        int temp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = temp;
+    }
+
+    /**
+     * 频率 ：17
+     * 字谜分组
+     *
+     * @param strs
+     * @return 例如，给定 ["eat", "tea", "tan", "ate", "nat", "bat"]，返回：
+     * <p>
+     * [
+     * ["ate", "eat","tea"],
+     * ["nat","tan"],
+     * ["bat"]
+     * ]
+     */
+    public List<List<String>> groupAnagrams(String[] strs) {
+        if (strs == null || strs.length <= 0) {
+            return null;
+        }
+        HashMap<String, List<String>> map = new HashMap<>();
+        for (String str : strs) {
+            char[] chars = str.toCharArray();
+            Arrays.sort(chars);
+            String sortString = String.valueOf(chars);
+            map.putIfAbsent(sortString, new ArrayList<String>());
+            map.get(sortString).add(str);
+        }
+        return new ArrayList<>(map.values());
+    }
+
+    /**
+     * 频率 ：18
+     * 二进制求和
+     *
+     * @param a
+     * @param b
+     * @return 给定两个二进制字符串，返回他们的和（用二进制表示）。
+     * <p>
+     * 案例：
+     * a = "11"
+     * b = "1"
+     * 返回 "100"
+     */
+    public String addBinary(String a, String b) {
+        if (a == null || a.length() <= 0) {
+            return b;
+        }
+        if (b == null || b.length() <= 0) {
+            return a;
+        }
+        int lengthA = a.length();
+        int lengthB = b.length();
+        for (int i = 0; i < lengthA; i++) {
+        }
+        //TODO
+        return null;
+    }
+
+    /**
+     * 频率 ：19
+     * 输入: 8
+     * 输出: 2
+     * 说明: 8 的平方根是 2.82842..., 由于我们想返回一个整数，小数部分将被舍去。
+     *
+     * @param x
+     * @return
+     */
+    public int mySqrt(int x) {
+        //TODO
+        return 1;
+    }
+
+    /**
+     * 频率 ：20
+     * 组合
+     *
+     * @param n
+     * @param k
+     * @return 给定两个整数 n 和 k，返回 1 ... n 中所有可能的 k 个数的组合。
+     * <p>
+     * 例如，
+     * 如果 n = 4 和 k = 2，组合如下：
+     * <p>
+     * [
+     * [2,4],
+     * [3,4],
+     * [2,3],
+     * [1,2],
+     * [1,3],
+     * [1,4],
+     * ]
+     */
+    public List<List<Integer>> combine(int n, int k) {
+
+    }
+
+    /**
+     * 频率 ：21
+     * 91. 解码方法
+     *
+     * @param s
+     * @return 包含 A-Z 的字母的消息通过以下规则编码：
+     * <p>
+     * 'A' -> 1
+     * 'B' -> 2
+     * ...
+     * 'Z' -> 26
+     * 给定一个包含数字的编码消息，请确定解码方法的总数。
+     * <p>
+     * 例如，
+     * 给定消息为 "12"， 它可以解码为 "AB"（1 2）或 "L"（12）。
+     * <p>
+     * "12" 的解码方法为 2 种。
+     */
+    public int numDecodings(String s) {
+
+    }
+
+    /**
+     * 频率 ：22
+     * 102. 二叉树的层次遍历
+     *
+     * @param
+     * @return 给定一个二叉树，返回其按层次遍历的节点值
+     * 例如:
+     * 给定二叉树: [3,9,20,null,null,15,7],
+     * <p>
+     * 3
+     * / \
+     * 9  20
+     * /  \
+     * 15   7
+     * 返回其层次遍历结果为：
+     * <p>
+     * [
+     * [3],
+     * [9,20],
+     * [15,7]
+     * ]
+     */
+    public class TreeNode {
+        int val;
+        TreeNode left;
+        TreeNode right;
+
+        TreeNode(int x) {
+            val = x;
+        }
+    }
+
+    public List<List<Integer>> levelOrder(TreeNode root) {
+
+    }
+
+    /**
+     * 频率 ：23
+     *
+     * @param root
+     * @return <p>
+     * 给定一个只包含 0-9 数字的二叉树，每个根到叶的路径可以代表一个数字。
+     * 例如，从根到叶路径 1->2->3则代表数字 123。
+     * 查找所有根到叶数字的总和。
+     * 例如，
+     * 1
+     * / \
+     * 2   3
+     * 根到叶子路径 1->2 表示数字 12。
+     * 根到叶子路径 1->3 表示数字 13。
+     * 返回总和 = 12 + 13 = 25。
+     */
+    public int sumNumbers(TreeNode root) {
+
+    }
+
+    /**
+     * 频率 ：24
+     *
+     * @param s
+     * @return <p>
+     * 给定一个字符串 s，将 s 分割成一些子串，使每个子串都是回文串。
+     * 返回 s 所有可能的分割方案。
+     * 例如，给出 s = "aab",
+     * 返回
+     * [
+     * ["aa","b"],
+     * ["a","a","b"]
+     * ]
+     */
+    public List<List<String>> partition(String s) {
+
+    }
+
+    /**
      * @param string
      * @return 求字符串中不重复字符串的长度
      */
@@ -392,7 +848,7 @@ public class Algorithm {
     }
 
     /**
-     * @param x
+     * @param x 自己写的
      * @return 反转整数 利用字符串的方式
      */
     public int reverse(int x) {
@@ -569,121 +1025,15 @@ public class Algorithm {
         return number;
     }
 
+
     /**
      * @param nums
-     * @param val
-     * @return 给定 nums = [3,2,2,3]，val = 3，
-     * 你的函数应该返回 长度 = 2，数组的前两个元素是 2。
-     * 移除元素
+     * @param k
+     * @return Kth Largest Element in an Array
+     * 查找第K大的数 利用快排
      */
-    public int removeElement(int[] nums, int val) {
-        if (nums.length < 0) {
-            return 0;
-        }
-        int pos = 0;
-        for (int i = 0; i < nums.length; i++) {
-            if (nums[i] != val) {
-                nums[pos] = nums[i];
-                pos++;
-            }
-        }
-        return pos;
+    public int findKthLargest(int[] nums, int k) {
+        return k;
     }
 
-    /**
-     * 全排列
-     *
-     * @param nums
-     * @return [1, 2, 3] 具有如下排列：
-     * <p>
-     * [
-     * [1,2,3],
-     * [1,3,2],
-     * [2,1,3],
-     * [2,3,1],
-     * [3,1,2],
-     * [3,2,1]
-     * ]
-     */
-    // 最终返回的结果集
-    List<List<Integer>> res = new ArrayList<List<Integer>>();
-
-    public List<List<Integer>> permute(int[] nums) {
-        int len = nums.length;
-        if (len == 0 || nums == null) return res;
-
-        // 采用前后元素交换的办法，dfs解题
-        exchange(nums, 0, len);
-        return res;
-    }
-
-    public void exchange(int[] nums, int i, int len) {
-        // 将当前数组加到结果集中
-        if (i == len - 1) {
-            List<Integer> list = new ArrayList<>();
-            for (int j = 0; j < len; j++) {
-                list.add(nums[j]);
-            }
-            res.add(list);
-            return;
-        }
-        // 将当前位置的数跟后面的数交换，并搜索解
-        for (int j = i; j < len; j++) {
-            swap(nums, i, j);
-            exchange(nums, i + 1, len);
-            swap(nums, i, j);
-        }
-    }
-
-    public void swap(int[] nums, int i, int j) {
-        int temp = nums[i];
-        nums[i] = nums[j];
-        nums[j] = temp;
-    }
-
-    /**
-     * 字谜分组
-     *
-     * @param strs
-     * @return 例如，给定 ["eat", "tea", "tan", "ate", "nat", "bat"]，返回：
-     * <p>
-     * [
-     * ["ate", "eat","tea"],
-     * ["nat","tan"],
-     * ["bat"]
-     * ]
-     */
-    public List<List<String>> groupAnagrams(String[] strs) {
-        if (strs == null || strs.length <= 0) {
-            return null;
-        }
-        HashMap<String, List<String>> map = new HashMap<>();
-        for (String str : strs) {
-            char[] chars = str.toCharArray();
-            Arrays.sort(chars);
-            String sortString = String.valueOf(chars);
-            map.putIfAbsent(sortString, new ArrayList<String>());
-            map.get(sortString).add(str);
-        }
-        return new ArrayList<>(map.values());
-    }
-
-    /**
-     * 二进制求和
-     *
-     * @param a
-     * @param b
-     * @return 给定两个二进制字符串，返回他们的和（用二进制表示）。
-     * <p>
-     * 案例：
-     * a = "11"
-     * b = "1"
-     * 返回 "100"
-     */
-    public String addBinary(String a, String b) {
-        if (a == null || a.length() <=0) {
-            
-        }
-        return null;
-    }
 }
