@@ -10,12 +10,6 @@ public class myClass {
 //            System.out.println(sort[i]);
 //        }
         Algorithm algorithm = new Algorithm();
-        int[] num = {0, 1, 1, 2, 2, 3, 3, 4};
-        algorithm.strStr("hello", "ll");
-        algorithm.insert(null, null);
-        char chars[] = {'1','2','3'};
-        System.out.println(chars);
-//        algorithm.strStr("hello", "ll");
-        System.out.println(algorithm.climbStairs(3));
+        System.out.println(algorithm.mySqrt(9));
     }
 }

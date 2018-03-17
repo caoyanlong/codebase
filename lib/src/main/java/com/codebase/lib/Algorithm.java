@@ -610,25 +610,75 @@ public class Algorithm {
         }
         int lengthA = a.length();
         int lengthB = b.length();
-        for (int i = 0; i < lengthA; i++) {
+        boolean isAShort = lengthA <= lengthB;
 
+        String shortStr = isAShort ? a : b;
+        String longStr = isAShort ? b : a;
+        int longLength = longStr.length();
+        boolean isNextAdd1 = false;
+        StringBuilder newString = new StringBuilder();
+        for (int i = shortStr.length() - 1; i >= 0; i--) {
+            char shortChar = shortStr.charAt(i);
+            char longChar = longStr.charAt(i);
+            if (isNextAdd1) {
+                if ((longChar == '1' && shortChar == '1')) {
+                    newString.append('1');
+                    isNextAdd1 = true;
+                } else if ((longChar == '0' && shortChar == '1')
+                        || (longChar == '1' && shortChar == '0')) {
+                    newString.append('0');
+                    isNextAdd1 = true;
+                } else if (longChar == '0' && shortChar == '0') {
+                    newString.append('1');
+                    isNextAdd1 = false;
+                }
+            } else {
+                if ((longChar == '1' && shortChar == '1')) {
+                    newString.append('0');
+                    isNextAdd1 = true;
+                } else if ((longChar == '0' && shortChar == '1')
+                        || (longChar == '1' && shortChar == '0')) {
+                    newString.append('1');
+                    isNextAdd1 = false;
+                } else if (longChar == '0' && shortChar == '0') {
+                    newString.append('0');
+                    isNextAdd1 = false;
+                }
+            }
+            longLength--;
         }
-        //TODO
-        return null;
+        if (longLength > 0) {
+            for (int i = longLength - 1; i > 0; i--) {
+                newString.append(longStr.charAt(i));
+            }
+        }
+        return newString.reverse().toString();
     }
 
     /**
      * 频率 ：19
+     * x 的平方根
      * 输入: 8
      * 输出: 2
      * 说明: 8 的平方根是 2.82842..., 由于我们想返回一个整数，小数部分将被舍去。
+     * 二分搜索折半查找
      *
      * @param x
      * @return
      */
     public int mySqrt(int x) {
-        //TODO
-        return 1;
+        int left = 0;
+        int right = x;
+        int middle = 0;
+        while (left < right) {
+            middle = left + (right - left) / 2;
+            if (x / middle >= middle) {
+                left = middle + 1;
+            } else {
+                right = middle;
+            }
+        }
+        return right - 1;
     }
 
     /**
@@ -652,7 +702,21 @@ public class Algorithm {
      * ]
      */
     public List<List<Integer>> combine(int n, int k) {
+        List<List<Integer>> result = new ArrayList<>();
+        List<Integer> unit = new ArrayList<>();
+        comeback(1, k, n, unit, result);
+        return result;
+    }
 
+    private void comeback(int temp, int k, int n, List<Integer> unit, List<List<Integer>> result) {
+        if (unit.size() == k) {
+            result.add(new ArrayList<Integer>(unit));
+        }
+        for (int i = temp; i < n; i++) {
+            unit.add(i);
+            comeback(i + 1, k, n, unit, result);
+            unit.remove(unit.size() - 1);//TODO 不理解
+        }
     }
 
     /**
@@ -674,7 +738,7 @@ public class Algorithm {
      * "12" 的解码方法为 2 种。
      */
     public int numDecodings(String s) {
-
+        return 0;
     }
 
     /**
@@ -703,18 +767,20 @@ public class Algorithm {
         int val;
         TreeNode left;
         TreeNode right;
-
-        TreeNode(int x) {
-            val = x;
-        }
     }
 
     public List<List<Integer>> levelOrder(TreeNode root) {
+        List<List<Integer>> result = new ArrayList<>();
+        List<Integer> unit = new ArrayList<>();
+        while (root.left != null && root.right != null) {
 
+        }
+        return null;
     }
 
     /**
      * 频率 ：23
+     * 求根叶数字总和
      *
      * @param root
      * @return <p>
@@ -731,10 +797,12 @@ public class Algorithm {
      */
     public int sumNumbers(TreeNode root) {
 
+        return 1;
     }
 
     /**
      * 频率 ：24
+     * 分割回文串
      *
      * @param s
      * @return <p>
@@ -748,7 +816,7 @@ public class Algorithm {
      * ]
      */
     public List<List<String>> partition(String s) {
-
+        return null;
     }
 
     /**
@@ -900,6 +968,7 @@ public class Algorithm {
         public ListNode(int value) {
             this.value = value;
         }
+
     }
 
     /**
