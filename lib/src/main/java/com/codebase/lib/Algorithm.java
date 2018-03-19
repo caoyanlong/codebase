@@ -272,7 +272,9 @@ public class Algorithm {
      *
      * @param intervals
      * @param newInterval
-     * @return 合并区间 Insert Interval
+     * @return 插入区间 Insert Interval
+     * 示例 1:
+     * 给定区间 [1,3],[6,9]，插入并合并 [2,5] 得到 [1,5],[6,9].
      */
     public ArrayList<Interval> insert(ArrayList<Interval> intervals, Interval newInterval) {
         intervals = new ArrayList<>();
