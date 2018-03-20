@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 
@@ -60,7 +61,7 @@ public class Algorithm {
                 if (result > Integer.MAX_VALUE || result < Integer.MIN_VALUE) {
                     return 0;
                 }
-                result = result * 10 + Integer.valueOf(chat) - '0';
+                result = result * 10 + Integer.valueOf(chat) - '0';//这个位置很神奇 不减-'0' 结果不对
             } else {
                 return negative ? -result : result;
             }
@@ -158,7 +159,7 @@ public class Algorithm {
     public int strStr(String haystack, String needle) {
         int index = -1;
         if (haystack == null || needle == null) {
-            return -1;
+            return index;
         }
         for (int i = 0; i < haystack.length(); i++) {
             int j = 0;
@@ -765,19 +766,51 @@ public class Algorithm {
      * [15,7]
      * ]
      */
-    public class TreeNode {
+    public static class TreeNode {
         int val;
         TreeNode left;
         TreeNode right;
+
+        public TreeNode(int value) {
+            val = value;
+        }
     }
 
+    /**
+     * @param root
+     * @return 分析：
+     * 层次遍历二叉树，就是首先访问二叉树的第一层元素，再访问第二层，接着访问第三层，以此类推。实现的方式是，用一个先进先出的队列作为辅助数据结构，用levelList保存每一层的元素，用resultList保存所有的levelList，然后
+     * （1）把根节点入队列，并把一个哨兵节点入队列，哨兵节点用于标识某一层已经结束
+     * （2）当队列中元素个数大于1时（除哨兵节点外还有其它元素），进入循环。访问该元素，如果该元素为哨兵节点，则说明这一层已经结束了，并将一个哨兵节点入队，用于标识下一层结束的地方，把levelList存入resultList，并建一个新的levelList保存下一层的元素；否则，把该节点的值放进levelList，并把它不为null的孩子节点入队。
+     * （3）把levelList加入resultList。因为最后一个哨兵节点没有办法被访问到，导致保存最后一层元素的levelList没办法在循环中被添加进resultList。
+     */
     public List<List<Integer>> levelOrder(TreeNode root) {
         List<List<Integer>> result = new ArrayList<>();
-        List<Integer> unit = new ArrayList<>();
-        while (root.left != null && root.right != null) {
-
+        if (root == null) {
+            return result;
         }
-        return null;
+        List<Integer> unit = new ArrayList<>();
+        LinkedList<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        queue.offer(null);
+        while (queue.size() > 1) {
+            TreeNode top = queue.pop();
+            if (top == null) {
+                result.add(unit);
+                queue.offer(null);
+                unit = new ArrayList<>();
+            } else {
+                unit.add(top.val);
+                if (top.left != null) {
+                    queue.offer(top.left);
+                }
+                if (top.right != null) {
+                    queue.offer(top.right);
+                }
+            }
+        }
+        result.add(unit);
+        return result;
     }
 
     /**
@@ -798,7 +831,6 @@ public class Algorithm {
      * 返回总和 = 12 + 13 = 25。
      */
     public int sumNumbers(TreeNode root) {
-
         return 1;
     }
 
